@@ -1,0 +1,36 @@
+import { Layout } from "@/components/Layout";
+
+export default function Privacy() {
+  return (
+    <Layout>
+      <article className="prose prose-slate mx-auto max-w-3xl dark:prose-invert">
+        <h1 className="mb-6 text-3xl font-bold tracking-tight">Privacy</h1>
+        <p className="lead">
+          ToolLocal is built on a simple promise: your files stay on your device.
+        </p>
+        <h2 className="mt-8 text-xl font-semibold">No uploads</h2>
+        <p>
+          All processing happens locally in your browser using WebAssembly (WASM). We never
+          receive the contents of your PDFs, images, or other files. The "0 bytes uploaded" badge
+          in the header is a statement of fact, not marketing.
+        </p>
+        <h2 className="mt-8 text-xl font-semibold">No tracking</h2>
+        <p>
+          We do not use cookies, analytics pixels, fingerprinting, or any other form of tracking.
+          We do not ask for your email or any personal information.
+        </p>
+        <h2 className="mt-8 text-xl font-semibold">True redaction</h2>
+        <p>
+          Our PDF redaction tool removes content from the file itself, not just draws black boxes
+          over it. After applying redactions, the tool runs an automatic verification step to
+          confirm that the selected terms are no longer present.
+        </p>
+        <h2 className="mt-8 text-xl font-semibold">Open-source philosophy</h2>
+        <p>
+          The tool runs entirely in your browser and the code that handles your files is available
+          for inspection. There is no server-side component that could log or retain your data.
+        </p>
+      </article>
+    </Layout>
+  );
+}
