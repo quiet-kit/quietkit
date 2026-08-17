@@ -18,7 +18,7 @@ export default function Home() {
         </p>
         <div className="flex flex-wrap justify-center gap-3">
           <Button asChild>
-            <Link to="/pdf/redact">Try PDF Redaction</Link>
+            <Link to="/pdf/redact">Redact your PDF</Link>
           </Button>
           <Button variant="outline" asChild>
             <Link to="/tools">Browse tools</Link>

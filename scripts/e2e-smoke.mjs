@@ -5,7 +5,6 @@ import { fileURLToPath } from "node:url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const FIXTURE = path.resolve(__dirname, "../fixtures/basic.pdf");
-const SERVER_URL = "http://localhost:3000";
 
 async function startServer() {
   const proc = spawn("npm", ["run", "dev"], {
@@ -13,25 +12,27 @@ async function startServer() {
     stdio: "pipe",
   });
 
-  await new Promise((resolve, reject) => {
+  const url = await new Promise((resolve, reject) => {
     let output = "";
-    proc.stdout.on("data", (chunk) => {
+    const handler = (chunk) => {
       output += chunk.toString();
-      if (output.includes("http://localhost:3000")) {
-        resolve();
+      const match = output.match(/Local:\s+(http:\/\/localhost:\d+)\//);
+      if (match) {
+        proc.stdout.off("data", handler);
+        proc.stderr.off("data", handler);
+        resolve(match[1]);
       }
-    });
-    proc.stderr.on("data", (chunk) => {
-      output += chunk.toString();
-    });
+    };
+    proc.stdout.on("data", handler);
+    proc.stderr.on("data", handler);
     setTimeout(() => reject(new Error("Server did not start in time: " + output)), 15000);
   });
 
-  return proc;
+  return { proc, url };
 }
 
 async function main() {
-  const server = await startServer();
+  const { proc, url } = await startServer();
   const errors = [];
 
   try {
@@ -45,7 +46,7 @@ async function main() {
       }
     });
 
-    await page.goto(`${SERVER_URL}/pdf/redact`);
+    await page.goto(`${url}/pdf/redact`);
     await page.waitForSelector("text=Drop a PDF here", { timeout: 10000 });
 
     const fileInput = await page.locator('input[type="file"]');
@@ -76,7 +77,7 @@ async function main() {
     console.error(err);
     process.exitCode = 1;
   } finally {
-    server.kill("SIGTERM");
+    proc.kill("SIGTERM");
   }
 }
 

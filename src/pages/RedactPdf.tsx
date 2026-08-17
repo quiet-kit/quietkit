@@ -81,6 +81,7 @@ export default function RedactPdf() {
   const navigate = useNavigate();
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const pageBitmapRef = useRef<ImageBitmap | null>(null);
 
   const [fileName, setFileName] = useState<string | null>(null);
   const [pages, setPages] = useState<PageInfo[]>([]);
@@ -134,70 +135,74 @@ export default function RedactPdf() {
       const py = (cy - rect.top) * scaleY;
       return {
         x: px / SCALE,
-        y: page.height - py / SCALE,
+        y: py / SCALE,
       };
     },
     [pages, currentPage]
   );
 
-  const drawCanvas = useCallback(
-    (imageData?: ImageData) => {
-      const canvas = canvasRef.current;
-      if (!canvas) return;
-      const ctx = canvas.getContext("2d");
-      if (!ctx) return;
+  const drawCanvas = useCallback(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
 
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      if (imageData) {
-        ctx.putImageData(imageData, 0, 0);
-      }
+    if (pageBitmapRef.current) {
+      ctx.drawImage(pageBitmapRef.current, 0, 0);
+    }
 
-      const page = pages[currentPage];
-      if (!page) return;
+    const page = pages[currentPage];
+    if (!page) return;
 
-      // Overlay manual regions and search matches for the current page.
-      const allRegions = [
-        ...manualRegions.filter((r) => r.page === currentPage),
-        ...searchMatches.filter((m) => m.page === currentPage).map((m) => ({
-          page: m.page,
-          rect: m.rect,
-        })),
-      ];
+    // Overlay manual regions and search matches for the current page.
+    const allRegions = [
+      ...manualRegions.filter((r) => r.page === currentPage),
+      ...searchMatches.filter((m) => m.page === currentPage).map((m) => ({
+        page: m.page,
+        rect: m.rect,
+      })),
+    ];
 
-      ctx.save();
-      ctx.strokeStyle = "rgba(239, 68, 68, 0.9)";
-      ctx.fillStyle = "rgba(239, 68, 68, 0.2)";
-      ctx.lineWidth = 2;
-      for (const region of allRegions) {
-        const r = region.rect;
-        const x = r.x0 * SCALE;
-        const y = (page.height - r.y1) * SCALE;
-        const w = (r.x1 - r.x0) * SCALE;
-        const h = (r.y1 - r.y0) * SCALE;
-        ctx.fillRect(x, y, w, h);
-        ctx.strokeRect(x, y, w, h);
-      }
+    ctx.save();
+    ctx.strokeStyle = "rgba(239, 68, 68, 0.9)";
+    ctx.fillStyle = "rgba(239, 68, 68, 0.2)";
+    ctx.lineWidth = 2;
+    for (const region of allRegions) {
+      const r = region.rect;
+      const x = r.x0 * SCALE;
+      const y = r.y0 * SCALE;
+      const w = (r.x1 - r.x0) * SCALE;
+      const h = (r.y1 - r.y0) * SCALE;
+      ctx.fillRect(x, y, w, h);
+      ctx.strokeRect(x, y, w, h);
+    }
 
-      if (pendingRegion) {
-        const r = pendingRegion;
-        const x0 = Math.min(r.startX, r.endX);
-        const y0 = Math.min(r.startY, r.endY);
-        const x1 = Math.max(r.startX, r.endX);
-        const y1 = Math.max(r.startY, r.endY);
-        const x = x0 * SCALE;
-        const y = (page.height - y1) * SCALE;
-        const w = (x1 - x0) * SCALE;
-        const h = (y1 - y0) * SCALE;
-        ctx.strokeStyle = "rgba(59, 130, 246, 0.9)";
-        ctx.fillStyle = "rgba(59, 130, 246, 0.2)";
-        ctx.fillRect(x, y, w, h);
-        ctx.strokeRect(x, y, w, h);
-      }
-      ctx.restore();
-    },
-    [manualRegions, searchMatches, pendingRegion, pages, currentPage]
+    if (pendingRegion) {
+      const r = pendingRegion;
+      const x0 = Math.min(r.startX, r.endX);
+      const y0 = Math.min(r.startY, r.endY);
+      const x1 = Math.max(r.startX, r.endX);
+      const y1 = Math.max(r.startY, r.endY);
+      const x = x0 * SCALE;
+      const y = y0 * SCALE;
+      const w = (x1 - x0) * SCALE;
+      const h = (y1 - y0) * SCALE;
+      ctx.strokeStyle = "rgba(59, 130, 246, 0.9)";
+      ctx.fillStyle = "rgba(59, 130, 246, 0.2)";
+      ctx.fillRect(x, y, w, h);
+      ctx.strokeRect(x, y, w, h);
+    }
+    ctx.restore();
+  },
+  [manualRegions, searchMatches, pendingRegion, pages, currentPage]
   );
+
+  // Redraw overlay rectangles whenever regions/matches change.
+  useEffect(() => {
+    drawCanvas();
+  }, [drawCanvas, manualRegions, searchMatches, pendingRegion]);
 
   const renderPage = useCallback(
     async (pageIndex: number) => {
@@ -208,17 +213,23 @@ export default function RedactPdf() {
         payload: { page: pageIndex, dpi: RENDER_DPI },
       });
       setProgress(100);
-      const { imageData, width, height } = response.data as {
-        imageData: ImageData;
+      const { png, width, height } = response.data as {
+        png: Uint8Array;
         width: number;
         height: number;
       };
+
+      pageBitmapRef.current?.close();
+      pageBitmapRef.current = await createImageBitmap(
+        new Blob([new Uint8Array(png)], { type: "image/png" })
+      );
+
       const canvas = canvasRef.current;
       if (canvas) {
         canvas.width = width;
         canvas.height = height;
       }
-      drawCanvas(imageData);
+      drawCanvas();
       setTimeout(() => setProgress(0), 300);
     },
     [ensureWorker, drawCanvas]
@@ -376,6 +387,8 @@ export default function RedactPdf() {
       setLoading(true);
       setError(null);
       setProgress(20);
+      // Terms are needed only for verification, not for redaction itself,
+      // because search matches already carry PDF rectangles.
       const terms = [
         ...(searchTerm ? [searchTerm] : []),
         ...PRESET_PATTERNS
@@ -387,7 +400,7 @@ export default function RedactPdf() {
         type: "redact",
         payload: {
           regions: manualRegions,
-          searchTerms: terms,
+          searchMatches,
         },
       });
       setProgress(80);
@@ -409,7 +422,7 @@ export default function RedactPdf() {
       setLoading(false);
       setError(err instanceof Error ? err.message : String(err));
     }
-  }, [ensureWorker, manualRegions, searchTerm]);
+  }, [ensureWorker, manualRegions, searchMatches, searchTerm]);
 
   const handleDownload = useCallback(() => {
     if (!outputBytes || !fileName) return;

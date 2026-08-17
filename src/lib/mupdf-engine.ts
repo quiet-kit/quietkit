@@ -44,7 +44,7 @@ export interface SearchPayload {
 
 export interface RedactPayload {
   regions: RedactionRegion[];
-  searchTerms: string[];
+  searchMatches: SearchMatch[];
 }
 
 export interface VerifyPayload {

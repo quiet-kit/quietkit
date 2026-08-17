@@ -115,16 +115,10 @@ function handleRender(payload: RenderPayload): WorkerResponse {
   const pixmap = page.toPixmap(matrix, DeviceRGB, false);
   const width = pixmap.getWidth();
   const height = pixmap.getHeight();
-  const pixels = pixmap.getPixels();
+  // Return PNG instead of raw pixels to avoid stride/component mismatches in ImageData.
+  const png = pixmap.asPNG();
 
-  // Copy pixmap pixels into a plain Uint8ClampedArray to satisfy ImageData typings.
-  const imageData = new ImageData(
-    new Uint8ClampedArray(pixels),
-    width,
-    height,
-  );
-
-  return { type: "render", ok: true, data: { imageData, width, height } };
+  return { type: "render", ok: true, data: { png, width, height } };
 }
 
 function handleSearch(payload: SearchPayload): WorkerResponse {
@@ -171,20 +165,16 @@ function applyManualRegions(doc: mupdf.PDFDocument, regions: RedactionRegion[]) 
   }
 }
 
-function applySearchRegions(doc: mupdf.PDFDocument, terms: string[]) {
-  for (let i = 0; i < doc.countPages(); i++) {
-    const page = doc.loadPage(i);
-    const st = page.toStructuredText();
-    for (const term of terms) {
-      const hits = st.search(term);
-      for (const hit of hits) {
-        for (const quad of hit) {
-          const rect = rectFromQuad(quad);
-          const annot = page.createAnnotation("Redact");
-          annot.setRect([rect.x0 - 2, rect.y0 - 2, rect.x1 + 2, rect.y1 + 2]);
-        }
-      }
-    }
+function applySearchMatches(doc: mupdf.PDFDocument, matches: SearchMatch[]) {
+  for (const match of matches) {
+    const page = doc.loadPage(match.page);
+    const annot = page.createAnnotation("Redact");
+    annot.setRect([
+      match.rect.x0 - 2,
+      match.rect.y0 - 2,
+      match.rect.x1 + 2,
+      match.rect.y1 + 2,
+    ]);
   }
 }
 
@@ -214,8 +204,8 @@ async function handleRedact(payload: RedactPayload): Promise<WorkerResponse> {
   if (payload.regions.length > 0) {
     applyManualRegions(doc, payload.regions);
   }
-  if (payload.searchTerms.length > 0) {
-    applySearchRegions(doc, payload.searchTerms);
+  if (payload.searchMatches.length > 0) {
+    applySearchMatches(doc, payload.searchMatches);
   }
 
   applyRedactions(doc);
