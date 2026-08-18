@@ -2,3 +2,5 @@ dist/
 node_modules/
 fixtures/
 fixtures-out/
+docker-compose.yml
+.DS_Store
