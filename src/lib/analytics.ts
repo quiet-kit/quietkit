@@ -1,6 +1,6 @@
 const GA_ID = import.meta.env.VITE_GA_MEASUREMENT_ID as string | undefined;
 const CONSENT_KEY = 'cookie-consent';
-const LOADED_FLAG = '__toollocalGaLoaded';
+const LOADED_FLAG = '__quietkitGaLoaded';
 
 export type Consent = 'accepted' | 'declined' | null;
 

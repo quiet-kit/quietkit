@@ -6,7 +6,7 @@ export default function Privacy() {
       <article className="prose prose-slate mx-auto max-w-3xl dark:prose-invert">
         <h1 className="mb-6 text-3xl font-bold tracking-tight">Privacy</h1>
         <p className="lead">
-          ToolLocal is built on a simple promise: your files stay on your device.
+          QuietKit is built on a simple promise: your files stay on your device.
         </p>
         <h2 className="mt-8 text-xl font-semibold">No uploads</h2>
         <p>
@@ -20,7 +20,7 @@ export default function Privacy() {
           unless you explicitly consent. If you accept cookies, we load Google Analytics to
           understand how the site is used, improve your experience, develop new features, and
           support localization. Google processes this data and may use cookies. You can decline or
-          withdraw consent at any time by clearing site data for toollocal.io.
+          withdraw consent at any time by clearing site data for quietkit.io.
         </p>
         <h2 className="mt-8 text-xl font-semibold">True redaction</h2>
         <p>

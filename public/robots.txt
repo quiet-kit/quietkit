@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://toollocal.io/sitemap.xml
+Sitemap: https://quietkit.io/sitemap.xml

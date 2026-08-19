@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router";
-import { Shield, Menu, X } from "lucide-react";
+import { VolumeX, ShieldCheck, Shield, Menu, X } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
@@ -22,8 +22,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
           <Link to="/" className="flex items-center gap-2 text-lg font-semibold tracking-tight">
-            <Shield className="h-6 w-6 text-[#0066CC]" />
-            <span>ToolLocal</span>
+            <VolumeX className="w-5 h-5 text-blue-600" />
+            <span>QuietKit</span>
           </Link>
 
           <nav className="hidden items-center gap-6 md:flex">
@@ -87,7 +87,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <footer className="border-t py-6">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 px-4 text-sm text-muted-foreground sm:flex-row sm:px-6 lg:px-8">
           <p>Free. No uploads. No sign-ups. Analytics only with your consent.</p>
-          <p>&copy; {new Date().getFullYear()} ToolLocal</p>
+          <p>&copy; {new Date().getFullYear()} QuietKit</p>
         </div>
       </footer>
 
