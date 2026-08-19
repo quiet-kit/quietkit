@@ -4,6 +4,7 @@ import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { CookieConsent } from "@/components/CookieConsent";
 
 const nav = [
   { path: "/", label: "Home" },
@@ -85,10 +86,12 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
       <footer className="border-t py-6">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 px-4 text-sm text-muted-foreground sm:flex-row sm:px-6 lg:px-8">
-          <p>Free. No uploads. No sign-ups. No tracking.</p>
+          <p>Free. No uploads. No sign-ups. Analytics only with your consent.</p>
           <p>&copy; {new Date().getFullYear()} ToolLocal</p>
         </div>
       </footer>
+
+      <CookieConsent />
     </div>
   );
 }

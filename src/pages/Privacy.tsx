@@ -14,10 +14,13 @@ export default function Privacy() {
           receive the contents of your PDFs, images, or other files. The "0 bytes uploaded" badge
           in the header is a statement of fact, not marketing.
         </p>
-        <h2 className="mt-8 text-xl font-semibold">No tracking</h2>
+        <h2 className="mt-8 text-xl font-semibold">Optional analytics</h2>
         <p>
-          We do not use cookies, analytics pixels, fingerprinting, or any other form of tracking.
-          We do not ask for your email or any personal information.
+          We do not use cookies, analytics pixels, fingerprinting, or any other form of tracking
+          unless you explicitly consent. If you accept cookies, we load Google Analytics to
+          understand how the site is used, improve your experience, develop new features, and
+          support localization. Google processes this data and may use cookies. You can decline or
+          withdraw consent at any time by clearing site data for toollocal.io.
         </p>
         <h2 className="mt-8 text-xl font-semibold">True redaction</h2>
         <p>
