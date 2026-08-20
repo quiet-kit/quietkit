@@ -2,6 +2,7 @@ import { Link } from "react-router";
 import { FileText } from "lucide-react";
 import { Layout } from "@/components/Layout";
 import { Badge } from "@/components/ui/badge";
+import { SEO } from "@/components/SEO";
 
 const tools = [
   {
@@ -16,6 +17,11 @@ const tools = [
 export default function Tools() {
   return (
     <Layout>
+      <SEO
+        title="All Tools"
+        description="Every QuietKit tool runs 100% in your browser: PDF redaction, HEIC conversion, EXIF removal, form filling. Free, unlimited, private by design."
+        path="/tools"
+      />
       <h1 className="mb-8 text-3xl font-bold tracking-tight">Tools</h1>
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {tools.map((tool) => (

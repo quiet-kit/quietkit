@@ -33,6 +33,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { SEO } from "@/components/SEO";
+import { REDACTION_FAQ } from "@/lib/faq";
 
 const RENDER_DPI = 150;
 const SCALE = RENDER_DPI / 72;
@@ -439,11 +441,46 @@ export default function RedactPdf() {
 
   const totalRegions = manualRegions.length + searchMatches.length;
 
+  const softwareApplicationLd = {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareApplication',
+    name: 'QuietKit PDF Redactor',
+    applicationCategory: 'UtilitiesApplication',
+    operatingSystem: 'Any (browser)',
+    url: 'https://quietkit.io/pdf/redact',
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+    description:
+      'Browser-based PDF redaction that permanently deletes text, images and metadata. No upload, no sign-up.',
+    featureList:
+      'True redaction (content deletion), Search & redact with regex presets, Automatic verification, Maximum-security rasterize mode, Offline-capable',
+  };
+
+  const faqLd = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: REDACTION_FAQ.map((item) => ({
+      '@type': 'Question',
+      name: item.question,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: item.answer,
+      },
+    })),
+  };
+
   return (
     <Layout>
+      <SEO
+        title="Redact PDF Online — Free, No Upload, No Sign Up"
+        description="True PDF redaction in your browser: deletes text, images and metadata — then verifies nothing is extractable. Free, unlimited, files never leave your device."
+        path="/pdf/redact"
+        jsonLd={[softwareApplicationLd, faqLd]}
+      />
       <div className="mb-6 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">PDF Redaction</h1>
+          <h1 className="text-3xl font-bold tracking-tight">
+            Redact PDF — Free, No Upload, No Sign Up
+          </h1>
           <p className="text-muted-foreground">
             Remove text and images permanently — right in your browser.
           </p>
@@ -683,6 +720,24 @@ export default function RedactPdf() {
           {error}
         </div>
       )}
+
+      <section className="mt-16 border-t pt-10">
+        <h2 className="mb-6 text-2xl font-bold tracking-tight">Frequently asked questions</h2>
+        <div className="space-y-4">
+          {REDACTION_FAQ.map((item, idx) => (
+            <details
+              key={idx}
+              className="group rounded-xl border bg-card p-4 shadow-sm"
+            >
+              <summary className="flex cursor-pointer list-none items-center justify-between font-semibold">
+                {item.question}
+                <span className="ml-2 transition-transform group-open:rotate-180">▼</span>
+              </summary>
+              <p className="mt-3 text-sm text-muted-foreground">{item.answer}</p>
+            </details>
+          ))}
+        </div>
+      </section>
     </Layout>
   );
 }

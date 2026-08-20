@@ -1,4 +1,7 @@
-const GA_ID = import.meta.env.VITE_GA_MEASUREMENT_ID as string | undefined;
+const GA_ID =
+  typeof import.meta.env !== 'undefined'
+    ? (import.meta.env.VITE_GA_MEASUREMENT_ID as string | undefined)
+    : undefined;
 const CONSENT_KEY = 'cookie-consent';
 const LOADED_FLAG = '__quietkitGaLoaded';
 

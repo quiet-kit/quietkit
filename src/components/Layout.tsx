@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router";
-import { VolumeX, ShieldCheck, Shield, Menu, X } from "lucide-react";
+import { VolumeX, Menu, X } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";

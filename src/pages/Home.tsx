@@ -2,10 +2,17 @@ import { Link } from "react-router";
 import { Shield, Lock, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Layout } from "@/components/Layout";
+import { SEO } from "@/components/SEO";
 
 export default function Home() {
   return (
     <Layout>
+      <SEO
+        title="QuietKit — Free Private Browser Tools"
+        description="Free tools that run entirely in your browser. Redact PDFs, convert images, strip metadata — no uploads, no sign-ups, no tracking. Your files never leave your device."
+        path="/"
+        noSuffix
+      />
       <section className="flex flex-col items-center justify-center gap-6 py-16 text-center md:py-24">
         <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-[#0066CC]/10">
           <Shield className="h-9 w-9 text-[#0066CC]" />
@@ -45,7 +52,7 @@ export default function Home() {
           <Shield className="mb-4 h-8 w-8 text-[#0066CC]" />
           <h3 className="mb-2 text-lg font-semibold">No accounts</h3>
           <p className="text-sm text-muted-foreground">
-            No sign-up, no cookies, no tracking. Open the page and use it.
+            No sign-up required. Optional analytics with your explicit consent.
           </p>
         </div>
       </section>

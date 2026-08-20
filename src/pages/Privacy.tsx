@@ -1,8 +1,14 @@
 import { Layout } from "@/components/Layout";
+import { SEO } from "@/components/SEO";
 
 export default function Privacy() {
   return (
     <Layout>
+      <SEO
+        title="Privacy, in Plain Terms"
+        description="QuietKit has no file-processing backend. Files are parsed by WebAssembly inside your browser tab. Verify it yourself in the Network tab — or go offline and keep working."
+        path="/privacy"
+      />
       <article className="prose prose-slate mx-auto max-w-3xl dark:prose-invert">
         <h1 className="mb-6 text-3xl font-bold tracking-tight">Privacy</h1>
         <p className="lead">
