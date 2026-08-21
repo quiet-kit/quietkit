@@ -7,7 +7,7 @@ import { fileURLToPath } from 'url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const DIST_DIR = path.resolve(__dirname, '../dist');
 const PORT = 3456;
-const ROUTES = ['/', '/tools', '/privacy', '/pdf/redact'];
+const ROUTES = ['/', '/tools', '/privacy', '/pdf/redact', '/pdf/redact-bank-statement', '/pdf/redact-ssn', '/pdf/redact-medical-records'];
 
 const MIME_TYPES = {
   '.html': 'text/html',

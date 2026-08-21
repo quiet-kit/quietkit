@@ -2,27 +2,22 @@ import { Layout } from "@/components/Layout";
 import { SEO } from "@/components/SEO";
 import { RedactTool } from "@/components/RedactTool";
 import { REDACTION_FAQ } from "@/lib/faq";
-import { Link } from "react-router";
-import { Landmark, UserRound, Stethoscope } from "lucide-react";
-import { SCENARIOS } from "@/lib/scenarios";
+import type { ScenarioConfig } from "@/lib/scenarios";
 
-const scenarioMeta = [
-  { id: "bank-statement", icon: Landmark },
-  { id: "ssn", icon: UserRound },
-  { id: "medical-records", icon: Stethoscope },
-] as const;
+interface RedactScenarioProps {
+  scenario: ScenarioConfig;
+}
 
-export default function RedactPdf() {
+export default function RedactScenario({ scenario }: RedactScenarioProps) {
   const softwareApplicationLd = {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
-    name: "QuietKit PDF Redactor",
+    name: `QuietKit ${scenario.label}`,
     applicationCategory: "UtilitiesApplication",
     operatingSystem: "Any (browser)",
-    url: "https://quietkit.io/pdf/redact",
+    url: `https://quietkit.io${scenario.path}`,
     offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
-    description:
-      "Browser-based PDF redaction that permanently deletes text, images and metadata. No upload, no sign-up.",
+    description: scenario.description,
     featureList:
       "True redaction (content deletion), Search & redact with regex presets, Automatic verification, Maximum-security rasterize mode, Offline-capable",
   };
@@ -43,41 +38,28 @@ export default function RedactPdf() {
   return (
     <Layout>
       <SEO
-        title="Redact PDF Online — Free, No Upload, No Sign Up"
-        description="True PDF redaction in your browser: deletes text, images and metadata — then verifies nothing is extractable. Free, unlimited, files never leave your device."
-        path="/pdf/redact"
+        title={scenario.pageTitle}
+        description={scenario.pageDescription}
+        path={scenario.path}
         jsonLd={[softwareApplicationLd, faqLd]}
       />
 
-      <RedactTool />
+      <RedactTool
+        title={scenario.title}
+        description={scenario.description}
+      />
 
       <section className="mt-16 border-t pt-10">
         <h2 className="mb-6 text-2xl font-bold tracking-tight">
-          Popular redaction scenarios
+          Guide: redacting {scenario.label.toLowerCase()}
         </h2>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {scenarioMeta.map(({ id, icon: Icon }) => {
-            const s = SCENARIOS.find((x) => x.id === id)!;
-            return (
-              <Link
-                key={id}
-                to={s.path}
-                className="group rounded-xl border bg-card p-6 shadow-sm transition-colors hover:border-[#0066CC]/30"
-              >
-                <div className="mb-4 flex items-center justify-between">
-                  <Icon className="h-8 w-8 text-[#0066CC]" />
-                </div>
-                <h3 className="mb-2 text-lg font-semibold group-hover:text-[#0066CC]">
-                  {s.label}
-                </h3>
-                <p className="text-sm text-muted-foreground">{s.description}</p>
-              </Link>
-            );
-          })}
-        </div>
+        <div
+          className="prose prose-slate max-w-none dark:prose-invert"
+          dangerouslySetInnerHTML={{ __html: scenario.introHtml }}
+        />
       </section>
 
-      <section className="mt-16 border-t pt-10">
+      <section className="mt-10 border-t pt-10">
         <h2 className="mb-6 text-2xl font-bold tracking-tight">
           Frequently asked questions
         </h2>

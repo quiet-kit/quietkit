@@ -54,16 +54,16 @@ async function main() {
     await page.waitForSelector("text=Page 1 of 1", { timeout: 30000 });
 
     // Search with the SSN regex preset.
-    await page.locator("button#ssn").click();
-    await page.locator("text=Find matches").click();
-    await page.waitForSelector("text=match(es) marked for redaction", { timeout: 30000 });
+    await page.locator('label[for="ssn"]').click();
+    await page.locator('button:has-text("Find matches")').click();
+    await page.waitForSelector('text=match(es) marked for redaction', { timeout: 30000 });
 
     // Apply redactions and confirm.
-    await page.locator("text=Apply redactions").click();
+    await page.locator('button:has-text("Apply redactions")').click();
     await page.getByRole("button", { name: "Continue" }).click();
 
     // Wait for auto-verification.
-    await page.waitForSelector("text=Verified: 0 matches remain", { timeout: 30000 });
+    await page.waitForSelector('text=Verified: 0 matches remain', { timeout: 30000 });
 
     await browser.close();
 
