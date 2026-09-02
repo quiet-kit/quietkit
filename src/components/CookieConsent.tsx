@@ -1,10 +1,14 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { getConsent, setConsent } from '@/lib/analytics';
+import { getConsent, setConsent, loadAnalyticsIfConsented } from '@/lib/analytics';
 import { cn } from '@/lib/utils';
 
 export function CookieConsent() {
   const [visible, setVisible] = useState(() => getConsent() === null);
+
+  useEffect(() => {
+    loadAnalyticsIfConsented();
+  }, []);
 
   const handleAccept = () => {
     setConsent('accepted');

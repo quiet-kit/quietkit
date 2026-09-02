@@ -1,18 +1,19 @@
-import type { ReactNode } from 'react';
-import Home from './pages/Home';
-import Tools from './pages/Tools';
-import Privacy from './pages/Privacy';
-import RedactPdf from './pages/RedactPdf';
-import RedactBankStatement from './pages/scenarios/RedactBankStatement';
-import RedactSsn from './pages/scenarios/RedactSsn';
-import RedactMedicalRecords from './pages/scenarios/RedactMedicalRecords';
+import { type ComponentType, lazy } from 'react';
+
+const Home = lazy(() => import('./pages/Home'));
+const Tools = lazy(() => import('./pages/Tools'));
+const Privacy = lazy(() => import('./pages/Privacy'));
+const RedactPdf = lazy(() => import('./pages/RedactPdf'));
+const RedactBankStatement = lazy(() => import('./pages/scenarios/RedactBankStatement'));
+const RedactSsn = lazy(() => import('./pages/scenarios/RedactSsn'));
+const RedactMedicalRecords = lazy(() => import('./pages/scenarios/RedactMedicalRecords'));
 
 export interface RouteManifestItem {
   path: string;
   label: string;
   priority: number;
   changefreq: string;
-  element: () => ReactNode;
+  element: ComponentType;
 }
 
 export const ROUTES: RouteManifestItem[] = [

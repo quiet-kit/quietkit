@@ -13,6 +13,12 @@ const nav = [
   { path: "/privacy", label: "Privacy" },
 ];
 
+const footerNav = [
+  { path: "/tools", label: "Tools" },
+  { path: "/pdf/redact", label: "Redact PDF" },
+  { path: "/privacy", label: "Privacy" },
+];
+
 export function Layout({ children }: { children: React.ReactNode }) {
   const location = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -84,8 +90,19 @@ export function Layout({ children }: { children: React.ReactNode }) {
         {children}
       </main>
 
-      <footer className="border-t py-6">
-        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 px-4 text-sm text-muted-foreground sm:flex-row sm:px-6 lg:px-8">
+      <footer className="border-t py-8">
+        <div className="mx-auto flex max-w-7xl flex-col items-center gap-4 px-4 text-sm text-muted-foreground sm:flex-row sm:justify-between sm:px-6 lg:px-8">
+          <div className="flex flex-wrap items-center justify-center gap-4">
+            {footerNav.map((item) => (
+              <Link
+                key={item.path}
+                to={item.path}
+                className="transition-colors hover:text-foreground"
+              >
+                {item.label}
+              </Link>
+            ))}
+          </div>
           <p>Free. No uploads. No sign-ups. Analytics only with your consent.</p>
           <p>&copy; {new Date().getFullYear()} QuietKit</p>
         </div>

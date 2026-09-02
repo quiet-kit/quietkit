@@ -72,6 +72,20 @@ async function cleanupInjectedGtagScripts(page) {
   });
 }
 
+/**
+ * Remove Vite's runtime <link rel="modulepreload"> tags.
+ * They are injected during client hydration and carry the absolute origin
+ * of the prerender server (e.g. http://localhost:3456). If left in the saved
+ * HTML, they leak the local preview URL into production markup.
+ */
+async function cleanupModulePreloadLinks(page) {
+  await page.evaluate(() => {
+    document
+      .querySelectorAll('link[rel="modulepreload"]')
+      .forEach((link) => link.remove());
+  });
+}
+
 async function main() {
   // The static server falls back to dist/index.html for every route. If the
   // build hasn't been run, the server will return a plain 404 page and
@@ -105,6 +119,7 @@ async function main() {
         );
       }
       await cleanupInjectedGtagScripts(page);
+      await cleanupModulePreloadLinks(page);
 
       const html = await page.content();
       const outputPath =

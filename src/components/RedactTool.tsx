@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
+  ChevronLeft,
+  ChevronRight,
   Download,
   FileUp,
   Loader2,
@@ -339,6 +341,46 @@ export function RedactTool({ title, description }: RedactToolProps) {
     setPendingRegion(null);
   }, [pendingRegion]);
 
+  const handleTouchStart = useCallback(
+    (event: React.TouchEvent<HTMLCanvasElement>) => {
+      if (pages.length === 0) return;
+      event.preventDefault();
+      const touch = event.touches[0];
+      const point = canvasToPdfPoint(touch.clientX, touch.clientY);
+      setPendingRegion({
+        page: currentPage,
+        startX: point.x,
+        startY: point.y,
+        endX: point.x,
+        endY: point.y,
+      });
+    },
+    [canvasToPdfPoint, currentPage, pages.length]
+  );
+
+  const handleTouchMove = useCallback(
+    (event: React.TouchEvent<HTMLCanvasElement>) => {
+      if (!pendingRegion) return;
+      event.preventDefault();
+      const touch = event.touches[0];
+      const point = canvasToPdfPoint(touch.clientX, touch.clientY);
+      setPendingRegion((prev) =>
+        prev
+          ? {
+              ...prev,
+              endX: point.x,
+              endY: point.y,
+            }
+          : null
+      );
+    },
+    [canvasToPdfPoint, pendingRegion]
+  );
+
+  const handleTouchEnd = useCallback(() => {
+    handleMouseUp();
+  }, [handleMouseUp]);
+
   const handleSearch = useCallback(async () => {
     const presets = selectedPresetsRef.current;
     if (!searchTerm && presets.size === 0) return;
@@ -491,8 +533,10 @@ export function RedactTool({ title, description }: RedactToolProps) {
                   size="sm"
                   disabled={currentPage === 0}
                   onClick={() => setCurrentPage((p) => Math.max(0, p - 1))}
+                  aria-label="Previous page"
                 >
-                  Prev
+                  <ChevronLeft className="h-4 w-4 sm:mr-1" />
+                  <span className="hidden sm:inline">Prev</span>
                 </Button>
                 <Button
                   variant="outline"
@@ -501,8 +545,10 @@ export function RedactTool({ title, description }: RedactToolProps) {
                   onClick={() =>
                     setCurrentPage((p) => Math.min(pages.length - 1, p + 1))
                   }
+                  aria-label="Next page"
                 >
-                  Next
+                  <span className="hidden sm:inline">Next</span>
+                  <ChevronRight className="h-4 w-4 sm:ml-1" />
                 </Button>
               </div>
             </div>
@@ -514,7 +560,10 @@ export function RedactTool({ title, description }: RedactToolProps) {
                 onMouseMove={handleMouseMove}
                 onMouseUp={handleMouseUp}
                 onMouseLeave={handleMouseUp}
-                className="max-w-full cursor-crosshair"
+                onTouchStart={handleTouchStart}
+                onTouchMove={handleTouchMove}
+                onTouchEnd={handleTouchEnd}
+                className="max-w-full cursor-crosshair touch-none"
               />
             </div>
 
