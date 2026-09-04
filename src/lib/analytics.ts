@@ -1,3 +1,5 @@
+
+
 const GA_ID =
   typeof import.meta.env !== 'undefined'
     ? (import.meta.env.VITE_GA_MEASUREMENT_ID as string | undefined)
@@ -32,9 +34,9 @@ export function setConsent(value: Consent): void {
     // Ignore environments where localStorage is unavailable.
   }
 
-  if (value === 'accepted') {
-    initGA();
-  }
+  // if (value === 'accepted') {
+  //   initGA();
+  // }
 }
 
 /**
@@ -79,21 +81,22 @@ function initGA(): void {
     [LOADED_FLAG]?: boolean;
   };
 
-  if (win[LOADED_FLAG]) {
-    console.log('[analytics] GA already loaded');
-    return;
-  }
+  // if (win[LOADED_FLAG]) {
+  //   console.log('[analytics] GA already loaded');
+  //   return;
+  // }
 
   // Use the exact standard gtag snippet order: initialize dataLayer and the
   // command queue before loading the external script.
   win.dataLayer = win.dataLayer || [];
-  function gtag(...args: unknown[]) {
-    win.dataLayer.push(args);
-  }
-  win.gtag = gtag;
-  gtag('js', new Date());
+  // function gtag(...args: unknown[]) {
+  //   win.dataLayer.push(args);
+  // }
+  // win.gtag = gtag;
+  if(typeof win.gtag != 'function') return;
+  win.gtag('js', new Date());
   // Enable debug_mode so events appear in GA4 DebugView.
-  gtag('config', GA_ID, { debug_mode: true });
+  win.gtag('config', GA_ID, { debug_mode: true });
   console.log('[analytics] queued config for measurement ID:', GA_ID);
 
   const script = document.createElement('script');
@@ -107,11 +110,11 @@ function initGA(): void {
   document.head.appendChild(script);
 
   // Expose a manual helper for diagnostics.
-  (window as unknown as Record<string, unknown>).__quietkitGaDebug = {
-    measurementId: GA_ID,
-    dataLayer: () => win.dataLayer,
-    sendPageView: () => gtag('event', 'page_view'),
-  };
+  // (window as unknown as Record<string, unknown>).__quietkitGaDebug = {
+  //   measurementId: GA_ID,
+  //   dataLayer: () => win.dataLayer,
+  //   sendPageView: () => gtag('event', 'page_view'),
+  // };
 
   win[LOADED_FLAG] = true;
   console.log('[analytics] GA initialized with measurement ID:', GA_ID);

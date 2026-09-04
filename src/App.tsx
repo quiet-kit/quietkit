@@ -1,6 +1,7 @@
 import { Suspense } from 'react';
 import { Routes, Route, Navigate } from 'react-router';
 import { ROUTES } from './routes-manifest';
+import { useAnalytics } from './lib/analytics2';
 
 function PageLoader() {
   return (
@@ -11,6 +12,7 @@ function PageLoader() {
 }
 
 export default function App() {
+  useAnalytics()
   return (
     <Suspense fallback={<PageLoader />}>
       <Routes>

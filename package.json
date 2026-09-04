@@ -13,7 +13,9 @@
     "sitemap": "tsx scripts/generate-sitemap.mjs",
     "fixtures": "node scripts/make-fixtures.mjs",
     "verify": "node verify.mjs",
-    "test": "node verify.mjs"
+    "test": "node verify.mjs",
+    "predeploy": "npm run build ; npm run postbuild; PUPPETEER_EXECUTABLE_PATH='/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' npm run prerender",
+    "deploy": "npm run predeploy; npx wrangler pages deploy ./dist --project-name=quietkit"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
@@ -60,6 +62,7 @@
     "react-hook-form": "^7.70.0",
     "react-resizable-panels": "^4.2.2",
     "react-router": "^7.6.1",
+    "react-router-dom": "^7.18.3",
     "recharts": "^2.15.4",
     "sonner": "^2.0.7",
     "tailwind-merge": "^3.4.0",
