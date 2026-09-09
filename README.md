@@ -1,6 +1,6 @@
 # QuietKit
 
-> Free browser tools for your files. No uploads. No sign-ups. No tracking.
+> Free browser tools for your files. No uploads. No sign-ups.
 
 **QuietKit** is a privacy-first collection of file-processing tools that run entirely in your browser using WebAssembly. Your files never leave your device.
 

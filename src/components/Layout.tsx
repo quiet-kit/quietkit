@@ -1,10 +1,15 @@
 import { Link, useLocation } from "react-router";
-import { VolumeX, Menu, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { CookieConsent } from "@/components/CookieConsent";
+import { LogoMark } from "@/components/LogoMark";
+
+// Set after the Product Hunt launch: the numeric post id from the live page URL.
+// While empty, the footer badge is not rendered (no broken third-party image).
+const PRODUCT_HUNT_POST_ID = "";
 
 const nav = [
   { path: "/", label: "Home" },
@@ -28,7 +33,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
           <Link to="/" className="flex items-center gap-2 text-lg font-semibold tracking-tight">
-            <VolumeX className="w-5 h-5 text-blue-600" />
+            <LogoMark className="w-5 h-5 text-blue-600" />
             <span>QuietKit</span>
           </Link>
 
@@ -91,20 +96,36 @@ export function Layout({ children }: { children: React.ReactNode }) {
       </main>
 
       <footer className="border-t py-8">
-        <div className="mx-auto flex max-w-7xl flex-col items-center gap-4 px-4 text-sm text-muted-foreground sm:flex-row sm:justify-between sm:px-6 lg:px-8">
-          <div className="flex flex-wrap items-center justify-center gap-4">
-            {footerNav.map((item) => (
-              <Link
-                key={item.path}
-                to={item.path}
-                className="transition-colors hover:text-foreground"
-              >
-                {item.label}
-              </Link>
-            ))}
+        <div className="mx-auto flex max-w-7xl flex-col items-center gap-4 px-4 sm:px-6 lg:px-8">
+          {PRODUCT_HUNT_POST_ID && (
+            <a
+              href={`https://www.producthunt.com/posts/${PRODUCT_HUNT_POST_ID}?utm_source=badge-featured&utm_medium=badge`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img
+                src={`https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=${PRODUCT_HUNT_POST_ID}&theme=light`}
+                alt="Featured on Product Hunt"
+                width="250"
+                height="54"
+              />
+            </a>
+          )}
+          <div className="flex w-full flex-col items-center gap-4 text-sm text-muted-foreground sm:flex-row sm:justify-between">
+            <div className="flex flex-wrap items-center justify-center gap-4">
+              {footerNav.map((item) => (
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  className="transition-colors hover:text-foreground"
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </div>
+            <p>Free. No uploads. No sign-ups. Analytics only with your consent.</p>
+            <p>&copy; {new Date().getFullYear()} QuietKit</p>
           </div>
-          <p>Free. No uploads. No sign-ups. Analytics only with your consent.</p>
-          <p>&copy; {new Date().getFullYear()} QuietKit</p>
         </div>
       </footer>
 
