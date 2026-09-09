@@ -9,7 +9,7 @@ import { LogoMark } from "@/components/LogoMark";
 
 // Set after the Product Hunt launch: the numeric post id from the live page URL.
 // While empty, the footer badge is not rendered (no broken third-party image).
-const PRODUCT_HUNT_POST_ID = "";
+const PRODUCT_HUNT_POST_ID = "1245542";
 
 const nav = [
   { path: "/", label: "Home" },
@@ -99,12 +99,12 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <div className="mx-auto flex max-w-7xl flex-col items-center gap-4 px-4 sm:px-6 lg:px-8">
           {PRODUCT_HUNT_POST_ID && (
             <a
-              href={`https://www.producthunt.com/posts/${PRODUCT_HUNT_POST_ID}?utm_source=badge-featured&utm_medium=badge`}
+              href={`https://www.producthunt.com/posts/${PRODUCT_HUNT_POST_ID}?utm_source=badge-featured&utm_medium=badge&utm_campaign=badge-quietkit-2`}
               target="_blank"
               rel="noopener noreferrer"
             >
               <img
-                src={`https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=${PRODUCT_HUNT_POST_ID}&theme=light`}
+                src={`https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=${PRODUCT_HUNT_POST_ID}&theme=neutral&t=1788942140025`}
                 alt="Featured on Product Hunt"
                 width="250"
                 height="54"
